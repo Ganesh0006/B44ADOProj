@@ -1,0 +1,237 @@
+create database B44Project
+use B44Project
+select @@SERVERNAME
+sp_tables
+create table product(pid int primary key,pname varchar(30),pdesc varchar(100))
+
+create procedure InsProd(@pid int,@pname varchar(30),@pdesc varchar(100))
+as
+insert into product values(@pid,@pname ,@pdesc)
+
+exec InsProd 100,'TV','32 inch LED TV'
+drop table product
+
+create procedure Dispprod
+as
+select * from product
+
+exec Dispprod
+
+create procedure Dispprod1(@pid int)
+as
+select * from product where pid=@pid 
+
+exec Dispprod1 100
+
+create procedure UpdProd(@pid int,@pname varchar(30),@pdesc varchar(100))
+as
+update product set pname= @pname ,pdesc=@pdesc where pid=@pid 
+
+exec UpdProd 100,'TV1','32 inch LED TV1'
+
+create procedure Delprod
+as
+delete from product
+
+exec Delprod
+
+create procedure Delprod1(@pid int)
+as
+delete from product where pid=@pid 
+
+exec Delprod1 100
+
+create table Model(mid int constraint pk_mod primary key,mname varchar(30),pid int constraint fk_mod references product(pid) ,pname varchar(30),spec varchar(100),uprice int,soh int)
+drop table Model
+create procedure InsModel(@mid int,@mname varchar(30),@pid int,@pname varchar(30),@spec varchar(100),@uprice int,@soh int)
+as
+insert into model values(@mid,@mname,@pid,@pname,@spec,@uprice,@soh)
+
+InsModel 1,'car',100,'jeep','1500cc',150000,55
+InsModel  2,'bus',10,'volv','150cc',15000,54
+InsModel  3,'van',104,'mandira','1500cc',150000,52
+InsModel 5,'car',90,'jeep1','1500cc',150000,55
+drop procedure InsModel
+
+select * from model
+
+create procedure upmodel(@mid int,@mname varchar(30),@pid int,@pname varchar(30),@spec varchar(100),@uprice int,@soh int)
+as
+update model set mname=@mname ,pid=@pid,pname= @pname ,spec=@spec,uprice=@uprice,soh=@soh where mid=@mid 
+exec upmodel 420,'car',501,'bmw','120kmsp',123456,6
+
+
+create procedure Dispmodel
+as
+select * from model
+
+exec Dispmodel
+
+create procedure Delmodel1(@mid int)
+as
+delete from model where mid=@mid 
+
+exec Delmodel 100
+
+create model(@pid int,@pname varchar(30),@pdesc varchar(100)
+
+create procedure loadmodelbypid(@pid int)
+as
+select * from model where pid = @pid
+
+
+drop table customer
+
+create table customer(uid int primary key,uname varchar(20),utype varchar(20))   
+
+create procedure insuser(@uid int,@uname varchar(20),@utype varchar(20))         
+as
+insert into customer values(@uid,@uname,@utype)
+
+
+exec insuser 1,'ganesh','admin'
+exec insuser 2,'kishore','admin'
+exec insuser 3,'sunil','user'
+exec insuser 4,'harish','user'
+
+select * from customer
+----
+create procedure Upduser(@uid int,@uname varchar(20),@utype varchar(20))
+as
+update customer set uname=@uname,utype=@utype where uid=@uid
+
+exec Upduser 1,'aadhi','user'
+create procedure Upduser1(@uid int,@uname varchar(20),@utype varchar(20))
+as
+update customer set uname=@uname,utype=@utype where uid=@uid
+exec Upduser 2,'dinesh','admin'
+
+-----
+create procedure disp1_user(@uid int)
+as 
+select*from customer where uid=@uid
+exec disp1_user 1
+
+create procedure disp_user
+as
+select*from customer
+
+exec disp_user
+
+----
+
+create procedure delmodel(@mid int)
+as 
+delete from model where mid=@mid
+
+exec delmodel 100
+--
+create procedure dispmodel(@mid int)
+as 
+select*from model where mid=@mid
+
+exec dispmodel 102
+--
+create procedure dispmodel1
+as 
+select*from model 
+
+exec dispmodel1
+
+-----
+
+
+
+
+
+
+
+
+
+
+exec loadmodelbypid 100
+
+create table users(uid varchar(20),pwd varchar(20),utype varchar(20))
+create procedure Insusers(@uid varchar(20),@pwd varchar(20),@utype varchar(20))
+as
+insert into users values(@uid,@pwd ,@utype)
+
+exec Insusers 'Jack','Jack','ADMIN'
+exec Insusers 'Ben','Ben','USER'
+
+
+select * from users
+
+create procedure chklog(@uid varchar(20),@pwd varchar(20),@utype varchar(20))
+as
+select count(*) from users where uid=@uid and pwd=@pwd and utype=@utype
+
+exec chklog 'Jack','Jack','ADMIN'
+
+exec chklog 'Ben','Ben','USER'
+
+
+
+
+
+create table sales(billno int identity,billdate date default getdate(),pid int,pname varchar(30),mid int,mname varchar(30),spec varchar(100),unitprice int,qty int,totamt int)
+
+insert into sales (pid ,pname ,mid,mname,spec,unitprice ,qty ,totamt)values(1,'Mobile',1000,'Samsung s100','8Gb Ram,Dual Camara',17000,2,34000)
+insert into sales (pid,pname,mid,mname,spec,unitprice,qty,totamt)values(2,'LED',1001,'TV','FULL HD,1080P,1920*1080 PIXEL',80000,3,240000)
+insert into sales (pid,pname,mid,mname,spec,unitprice,qty,totamt)values(3,'LENOVO',200,'LAPTOP','4GB RAM WITH 256GB SSD STORAGE',60000,2,120000)
+
+create procedure InsSales(@pid int,@pname varchar(30),@mid int,@mname varchar(30),@spec varchar(100),@unitprice int,@qty int,@totamt int)
+as
+insert into sales(pid ,pname ,mid,mname,spec,unitprice ,qty ,totamt) values(@pid,@pname,@mid,@mname,@spec,@unitprice,@qty,@totamt)
+
+select * from sales
+---
+create procedure dispsales
+as 
+select*from sales
+exec dispsales
+drop table sales
+ 
+ create procedure dispsales1(@pid int)
+ as
+ select *from sales where pid=@pid
+ exec dispsales1 200
+
+  create procedure dispsales2(@mid int)
+ as
+ select *from sales where mid=@mid
+ exec dispsales2 100
+
+create procedure delsales
+as
+delete from sales
+exec delsales
+
+-----
+create procedure DailyRpt
+as
+select * from sales where billdate =cast(getdate() as date)
+
+exec DailyRpt
+drop table DailyRpt
+
+create procedure DailyRpt1 (@fdate date)
+as
+select * from sales where billdate = cast(@fdate as date)
+
+select * from sales where billdate = '07-08-2023'
+
+exec DailyRpt1 '07-08-2023'
+
+
+
+create procedure SalesRpt(@fdate date,@tdate date)
+as
+select * from sales where billdate between @fdate and @tdate
+
+exec SalesRpt '2021-04-30','2021-05-01'
+
+
+
+
+
